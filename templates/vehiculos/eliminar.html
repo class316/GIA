@@ -1,0 +1,8 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Eliminar vehículo{% endblock %}
+{% block heading %}Eliminar vehículo{% endblock %}
+{% block subtitle %}Confirma esta acción antes de retirar el registro.{% endblock %}
+{% block content %}
+<div class="card form-card text-center"><h4>¿Eliminar el vehículo {{ vehiculo.placa }}?</h4><p class="mb-4">Esta acción no se puede deshacer.</p>
+<form method="post">{% csrf_token %}<div class="d-flex flex-column flex-md-row gap-2 justify-content-center"><a href="{% url 'vehiculos:lista' %}" class="btn btn-outline-light">Volver sin guardar</a><button type="submit" class="btn btn-danger">Eliminar vehículo</button></div></form></div>
+{% endblock %}

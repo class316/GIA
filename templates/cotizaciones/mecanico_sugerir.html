@@ -1,0 +1,25 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Sugerir servicio{% endblock %}
+{% block heading %}Sugerir servicio para cotizacion #{{ cotizacion.pk }}{% endblock %}
+{% block subtitle %}Registra recomendacion tecnica y repuestos que deberian comprarse o aprobarse.{% endblock %}
+{% block content %}
+<section class="card table-card mb-4">
+    <div class="table-toolbar"><h4 class="table-title">Falla reportada</h4><span class="street-tag">{{ cotizacion.vehiculo.placa }}</span></div>
+    <p><strong>Cliente:</strong> {{ cotizacion.cliente.nombre }}</p>
+    <p><strong>Vehiculo:</strong> {{ cotizacion.vehiculo.marca }} {{ cotizacion.vehiculo.modelo }} - {{ cotizacion.vehiculo.placa }}</p>
+    <p class="mb-0"><strong>Falla:</strong> {{ cotizacion.descripcion_falla }}</p>
+</section>
+<div class="card form-card">
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'taller/formulario.html' %}
+        <div class="form-text mt-3">
+            Mantén los comentarios: sirven para explicar el diagnostico y aclarar repuestos o cantidades que no esten en inventario.
+        </div>
+        <div class="d-flex flex-column flex-md-row gap-2 justify-content-end mt-4">
+            <a class="btn btn-outline-light" href="{% url 'cotizaciones:mecanico_lista' %}">Volver sin guardar</a>
+            <button class="btn btn-primary">Guardar sugerencia</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

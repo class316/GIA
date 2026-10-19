@@ -1,0 +1,17 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Registrar cliente{% endblock %}
+{% block heading %}Registrar cliente{% endblock %}
+{% block subtitle %}Selecciona la cuenta de acceso y completa los datos del cliente del taller.{% endblock %}
+{% block content %}
+<div class="card form-card">
+    <p class="mb-4">Primero elige la <strong>Cuenta de acceso del cliente</strong> creada en Personal y accesos. Luego completa teléfono, correo y dirección.</p>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'taller/formulario.html' %}
+        <div class="d-flex flex-column flex-md-row gap-2 justify-content-end mt-4">
+            <a href="{% url 'clientes:lista' %}" class="btn btn-outline-light">Volver sin guardar</a>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

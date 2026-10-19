@@ -1,0 +1,38 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Mecanico{% endblock %}
+{% block titlebar %}Estacion de trabajo{% endblock %}
+{% block heading %}Panel de Mecanico{% endblock %}
+{% block subtitle %}Bienvenido {{ request.user.username }}. Gestiona solicitudes y trabajos asignados.{% endblock %}
+{% block content %}
+{% if not mecanico %}
+    <div class="card text-center p-4"><h4>Cuenta pendiente de vinculacion</h4><p class="mb-0">Tu cuenta aun no tiene datos de mecanico asociados. Comunicate con el administrador.</p></div>
+{% else %}
+    <section class="street-dashboard-grid mb-4">
+        <div class="card street-panel street-panel-lg">
+            <span class="street-tag mb-3">Pit lane</span>
+            <h3 class="mb-2">Solicitudes disponibles</h3>
+            <p class="text-light mb-4">Revisa servicios pendientes sin mecanico asignado y acepta los trabajos que entran al taller.</p>
+            <a href="{% url 'mecanico_solicitudes' %}" class="street-card-link">
+                <div>
+                    <strong>Abrir solicitudes</strong>
+                    <div class="small text-light">Bandeja de servicios pendientes</div>
+                </div>
+                <span class="street-icon">&#128229;</span>
+            </a>
+        </div>
+        <div class="card street-panel street-panel-md">
+            <span class="street-tag mb-3">Operacion</span>
+            <h4>Mis trabajos asignados</h4>
+            <p class="text-light">Servicios aceptados o asignados a tu cuenta.</p>
+            <a href="{% url 'mecanico_mis_trabajos' %}" class="btn btn-primary w-100">Ver trabajos</a>
+        </div>
+    </section>
+
+    <div class="card table-card">
+        <div class="table-toolbar"><h4 class="table-title">Resumen de trabajos</h4><span class="street-tag">Workshop live</span></div>
+        <div class="table-responsive"><table class="table align-middle"><thead><tr><th>#</th><th>Cliente</th><th>Vehiculo</th><th>Servicio</th><th>Estado</th><th>Costo</th><th class="text-end">Opciones</th></tr></thead><tbody>
+        {% for orden in ordenes %}<tr><td>{{ orden.pk }}</td><td>{{ orden.cliente.nombre }}</td><td>{{ orden.vehiculo.placa }}</td><td>{{ orden.get_tipo_servicio_display }}</td><td>{% if orden.estado == 'pendiente' %}<span class="badge estado-pendiente">{{ orden.get_estado_display }}</span>{% elif orden.estado == 'en_proceso' %}<span class="badge estado-en-proceso">{{ orden.get_estado_display }}</span>{% elif orden.estado == 'finalizado' %}<span class="badge estado-finalizado">{{ orden.get_estado_display }}</span>{% elif orden.estado == 'cancelado' %}<span class="badge estado-cancelado">{{ orden.get_estado_display }}</span>{% else %}<span class="badge text-bg-secondary">{{ orden.get_estado_display }}</span>{% endif %}</td><td>${{ orden.costo }}</td><td class="text-end"><a href="{% url 'mecanico_actualizar' orden.pk %}" class="btn btn-sm btn-primary">Actualizar trabajo</a></td></tr>{% empty %}<tr><td colspan="7" class="text-center py-3">No tienes ordenes asignadas por ahora.</td></tr>{% endfor %}
+        </tbody></table></div>
+    </div>
+{% endif %}
+{% endblock %}

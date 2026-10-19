@@ -1,0 +1,47 @@
+{% extends 'usuarios/base.html' %}
+{% block title %}GIA - Personal y accesos{% endblock %}
+{% block heading %}Personal y accesos{% endblock %}
+{% block subtitle %}Administra quién puede ingresar al sistema y su tipo de cuenta.{% endblock %}
+{% block content %}
+<section class="card module-hero">
+    <div>
+        <div class="module-eyebrow">Control de acceso</div>
+        <h3 class="mb-2">Cuentas del sistema</h3>
+        <p class="mb-0 text-light">Gestiona administradores, clientes y mecánicos con una vista clara del estado de cada cuenta.</p>
+        <div class="module-summary">
+            <span class="summary-pill"><strong>{{ usuarios|length }}</strong> cuentas registradas</span>
+            <span class="summary-pill">Roles: admin, cliente, mecánico</span>
+        </div>
+    </div>
+    <a href="{% url 'usuarios:crear' %}" class="btn btn-primary">Registrar nueva cuenta</a>
+</section>
+
+<section class="street-stat-grid mb-3">
+    <div class="street-stat"><strong>{{ usuarios|length }}</strong><span>Cuentas activas y registradas</span></div>
+    <div class="street-stat"><strong>3</strong><span>Tipos de acceso disponibles</span></div>
+    <div class="street-stat"><strong>GIA</strong><span>Entrada segura al taller</span></div>
+</section>
+
+<section class="card table-card">
+    <div class="table-toolbar"><h4 class="table-title">Directorio de accesos</h4><span class="street-tag">Street access</span></div>
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th>Nombre de acceso</th><th>Nombre</th><th>Email</th><th>Tipo de cuenta</th><th>Estado</th><th class="text-end">Opciones</th></tr></thead>
+            <tbody>
+            {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.username }}</td>
+                    <td>{{ usuario.get_full_name|default:'-' }}</td>
+                    <td>{{ usuario.email|default:'-' }}</td>
+                    <td>{% if usuario.rol == 'admin' %}Administrador{% elif usuario.rol == 'mecanico' %}Mecánico{% else %}Cliente{% endif %}</td>
+                    <td>{% if usuario.is_active %}<span class="badge text-bg-success">Activa</span>{% else %}<span class="badge text-bg-secondary">Inactiva</span>{% endif %}</td>
+                    <td class="text-end"><span class="action-stack"><a href="{% url 'usuarios:editar' usuario.pk %}" class="btn btn-sm btn-primary">Actualizar</a><a href="{% url 'usuarios:eliminar' usuario.pk %}" class="btn btn-sm btn-danger">Eliminar</a></span></td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="6" class="text-center py-4">Todavía no hay cuentas registradas.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Agregar evidencia{% endblock %}
+{% block heading %}Agregar evidencia{% endblock %}
+{% block subtitle %}Sube una foto de la orden #{{ orden.pk }} desde camara o galeria del celular.{% endblock %}
+{% block content %}
+<section class="card module-hero">
+    <div>
+        <div class="module-eyebrow">Funcion movil</div>
+        <h3 class="mb-2">Evidencia del servicio</h3>
+        <p class="mb-0 text-light">{{ orden.cliente.nombre }} - {{ orden.vehiculo.placa }} {{ orden.vehiculo.marca }} {{ orden.vehiculo.modelo }}</p>
+        <div class="module-summary">
+            <span class="summary-pill">Usa la camara del celular</span>
+            <span class="summary-pill">Imagen maxima: <strong>5 MB</strong></span>
+        </div>
+    </div>
+    <span class="street-icon">&#128247;</span>
+</section>
+
+<div class="card form-card">
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {% include 'taller/formulario.html' %}
+        <div class="d-flex flex-column flex-md-row gap-2 justify-content-end mt-4">
+            <a href="{% url 'mecanico_mis_trabajos' %}" class="btn btn-outline-light">Volver sin guardar</a>
+            <button type="submit" class="btn btn-primary">Guardar evidencia</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

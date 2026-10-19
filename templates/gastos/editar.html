@@ -1,0 +1,5 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Actualizar gasto{% endblock %}
+{% block heading %}Actualizar gasto{% endblock %}
+{% block subtitle %}Edita valor, fecha o categoria.{% endblock %}
+{% block content %}<div class="card form-card"><form method="post" novalidate>{% csrf_token %}{% include 'taller/formulario.html' %}<div class="d-flex gap-2 justify-content-end mt-4"><a class="btn btn-outline-light" href="{% url 'gastos:lista' %}">Volver sin guardar</a><button class="btn btn-primary">Guardar cambios</button></div></form></div>{% endblock %}

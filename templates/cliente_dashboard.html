@@ -1,0 +1,53 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Cliente{% endblock %}
+{% block titlebar %}Portal del cliente{% endblock %}
+{% block heading %}Panel de Cliente{% endblock %}
+{% block subtitle %}Bienvenido {{ request.user.username }}. Consulta tus vehiculos, evidencias y el avance de tus servicios.{% endblock %}
+{% block content %}
+{% if not cliente %}
+    <div class="card text-center p-4"><h4>Cuenta pendiente de vinculacion</h4><p class="mb-0">Tu cuenta aun no tiene datos de cliente asociados. Comunicate con el administrador.</p></div>
+{% else %}
+    <section class="street-dashboard-grid mb-4">
+        <div class="card street-panel street-panel-lg">
+            <span class="street-tag mb-3">Portal street service</span>
+            <h3 class="mb-2">Solicitar servicio</h3>
+            <p class="text-light mb-4">Agenda una revision o reparacion para uno de tus vehiculos registrados y consulta el avance desde este panel.</p>
+            <a href="{% url 'cliente_solicitar_servicio' %}" class="street-card-link">
+                <div>
+                    <strong>Nuevo servicio</strong>
+                    <div class="small text-light">Selecciona vehiculo, servicio y mecanico disponible</div>
+                </div>
+                <span class="street-icon">&#128736;</span>
+            </a>
+            <a href="{% url 'cotizaciones:solicitar' %}" class="street-card-link mt-3">
+                <div>
+                    <strong>Solicitar cotizacion</strong>
+                    <div class="small text-light">Describe una falla y recibe una estimacion del taller</div>
+                </div>
+                <span class="street-icon">&#128221;</span>
+            </a>
+        </div>
+        <div class="card street-panel street-panel-md">
+            <h4>Resumen de actividad</h4>
+            <div class="street-stat-grid">
+                <div class="street-stat"><strong>{{ vehiculos|length }}</strong><span>Vehiculos registrados</span></div>
+                <div class="street-stat"><strong>{{ ordenes|length }}</strong><span>Solicitudes realizadas</span></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="card table-card mb-4">
+        <div class="table-toolbar"><h4 class="table-title">Mis vehiculos</h4><span class="street-tag">Mi garage</span></div>
+        <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Placa</th><th>Marca</th><th>Modelo</th><th>Anio</th></tr></thead><tbody>
+        {% for vehiculo in vehiculos %}<tr><td>{{ vehiculo.placa }}</td><td>{{ vehiculo.marca }}</td><td>{{ vehiculo.modelo }}</td><td>{{ vehiculo.anio }}</td></tr>{% empty %}<tr><td colspan="4" class="text-center py-3">Aun no tienes vehiculos registrados.</td></tr>{% endfor %}
+        </tbody></table></div>
+    </div>
+
+    <div class="card table-card">
+        <div class="table-toolbar"><h4 class="table-title">Mis solicitudes</h4><span class="street-tag">Service tracking</span></div>
+        <div class="table-responsive"><table class="table align-middle"><thead><tr><th>#</th><th>Vehiculo</th><th>Servicio</th><th>Estado</th><th>Mecanico</th><th>Costo</th><th>Fecha</th><th>Evidencias</th><th>Observaciones</th></tr></thead><tbody>
+        {% for orden in ordenes %}<tr><td>{{ orden.pk }}</td><td>{{ orden.vehiculo.placa }}</td><td>{{ orden.get_tipo_servicio_display }}</td><td>{% if orden.estado == 'pendiente' %}<span class="badge estado-pendiente">{{ orden.get_estado_display }}</span>{% elif orden.estado == 'en_proceso' %}<span class="badge estado-en-proceso">{{ orden.get_estado_display }}</span>{% elif orden.estado == 'finalizado' %}<span class="badge estado-finalizado">{{ orden.get_estado_display }}</span>{% elif orden.estado == 'cancelado' %}<span class="badge estado-cancelado">{{ orden.get_estado_display }}</span>{% else %}<span class="badge text-bg-secondary">{{ orden.get_estado_display }}</span>{% endif %}</td><td>{% if orden.mecanico %}{{ orden.mecanico.nombre }}{% else %}Sin asignar{% endif %}</td><td>${{ orden.costo }}</td><td>{{ orden.fecha_ingreso }}</td><td><a href="{% url 'ordenes:evidencias' orden.pk %}" class="btn btn-sm btn-outline-light">{{ orden.evidencias.count }} fotos</a></td><td>{{ orden.observaciones_mecanico|default:'-' }}</td></tr>{% empty %}<tr><td colspan="9" class="text-center py-3">Aun no tienes servicios registrados.</td></tr>{% endfor %}
+        </tbody></table></div>
+    </div>
+{% endif %}
+{% endblock %}

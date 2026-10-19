@@ -1,0 +1,10 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Mis cotizaciones{% endblock %}
+{% block heading %}Mis cotizaciones{% endblock %}
+{% block subtitle %}Consulta el estado de las cotizaciones enviadas al taller.{% endblock %}
+{% block content %}
+<section class="card module-hero"><div><div class="module-eyebrow">Cliente</div><h3>Cotizaciones</h3><p class="text-light mb-0">Revisa si el taller ya estimo el costo y la solucion sugerida.</p></div><a class="btn btn-primary" href="{% url 'cotizaciones:solicitar' %}">Solicitar cotizacion</a></section>
+<section class="card table-card"><div class="table-toolbar"><h4 class="table-title">Solicitudes enviadas</h4><span class="street-tag">Quote tracking</span></div><div class="table-responsive"><table class="table align-middle"><thead><tr><th>#</th><th>Vehiculo</th><th>Prioridad</th><th>Estado</th><th>Costo estimado</th><th>Servicios</th><th>Repuestos</th><th>Comentarios</th></tr></thead><tbody>
+{% for cotizacion in cotizaciones %}<tr><td>{{ cotizacion.pk }}</td><td>{{ cotizacion.vehiculo.placa }}</td><td><span class="badge prioridad-{{ cotizacion.prioridad }}">{{ cotizacion.get_prioridad_display }}</span></td><td>{{ cotizacion.get_estado_display }}</td><td>${{ cotizacion.costo_estimado }}</td><td>{% for codigo in cotizacion.servicios_catalogo %}<span class="badge text-bg-info">{{ codigo }}</span> {% empty %}Pendiente de revision{% endfor %}</td><td>{% for repuesto in cotizacion.repuestos_catalogo.all %}{{ repuesto.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}Pendiente de revision{% endfor %}</td><td>{{ cotizacion.servicios_sugeridos|default:cotizacion.repuestos_recomendados|default:'Pendiente de revision' }}</td></tr>{% empty %}<tr><td colspan="8" class="text-center py-4">Aun no tienes cotizaciones.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

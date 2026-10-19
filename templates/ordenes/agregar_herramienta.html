@@ -1,0 +1,5 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Asignar herramienta{% endblock %}
+{% block heading %}Asignar herramienta a orden #{{ orden.pk }}{% endblock %}
+{% block subtitle %}Solo se muestran herramientas disponibles. Al asignarla queda en uso.{% endblock %}
+{% block content %}<div class="card form-card"><form method="post" novalidate>{% csrf_token %}{% include 'taller/formulario.html' %}<div class="d-flex gap-2 justify-content-end mt-4"><a class="btn btn-outline-light" href="{% url 'ordenes:editar' orden.pk %}">Volver sin guardar</a><button class="btn btn-primary">Asignar herramienta</button></div></form></div>{% endblock %}

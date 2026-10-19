@@ -1,0 +1,45 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Clientes del taller{% endblock %}
+{% block heading %}Clientes del taller{% endblock %}
+{% block subtitle %}Consulta y actualiza la información de las personas que atiende el taller.{% endblock %}
+{% block content %}
+<section class="card module-hero">
+    <div>
+        <div class="module-eyebrow">Relación con clientes</div>
+        <h3 class="mb-2">Base de clientes</h3>
+        <p class="mb-0 text-light">Centraliza datos de contacto, dirección y cuenta de acceso asociada.</p>
+        <div class="module-summary">
+            <span class="summary-pill"><strong>{{ clientes|length }}</strong> clientes registrados</span>
+            <span class="summary-pill">Contacto y acceso vinculados</span>
+        </div>
+    </div>
+    <a href="{% url 'clientes:crear' %}" class="btn btn-primary">Registrar cliente</a>
+</section>
+
+<section class="street-stat-grid mb-3">
+    <div class="street-stat"><strong>{{ clientes|length }}</strong><span>Clientes en base de datos</span></div>
+    <div class="street-stat"><strong>CRM</strong><span>Contacto y acceso vinculados</span></div>
+    <div class="street-stat"><strong>24/7</strong><span>Informacion lista para servicio</span></div>
+</section>
+
+<section class="card table-card">
+    <div class="table-toolbar"><h4 class="table-title">Clientes registrados</h4><span class="street-tag">Customer crew</span></div>
+    <div class="table-responsive"><table class="table align-middle">
+        <thead><tr><th>Nombre</th><th>Teléfono</th><th>Correo</th><th>Dirección</th><th>Cuenta relacionada</th><th class="text-end">Opciones</th></tr></thead>
+        <tbody>
+        {% for cliente in clientes %}
+            <tr>
+                <td>{{ cliente.nombre }}</td>
+                <td>{{ cliente.telefono|default:'-' }}</td>
+                <td>{{ cliente.correo|default:'Correo no registrado' }}</td>
+                <td>{{ cliente.direccion|default:'-' }}</td>
+                <td>{% if cliente.usuario %}{{ cliente.usuario.username }}{% else %}<span class="badge text-bg-warning">Sin cuenta</span>{% endif %}</td>
+                <td class="text-end"><span class="action-stack"><a href="{% url 'clientes:editar' cliente.pk %}" class="btn btn-sm btn-primary">Actualizar</a><a href="{% url 'clientes:eliminar' cliente.pk %}" class="btn btn-sm btn-danger">Eliminar</a></span></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="6" class="text-center py-4">Todavía no hay clientes registrados.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table></div>
+</section>
+{% endblock %}

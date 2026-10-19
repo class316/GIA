@@ -1,0 +1,16 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Eliminar cliente{% endblock %}
+{% block heading %}Eliminar cliente{% endblock %}
+{% block subtitle %}Confirma esta acción antes de retirar el registro.{% endblock %}
+{% block content %}
+<div class="card form-card text-center">
+    <h4>¿Eliminar a {{ cliente.nombre }}?</h4>
+    <p class="mb-4">Esta acción también retirará los vehículos y servicios asociados.</p>
+    <form method="post">{% csrf_token %}
+        <div class="d-flex flex-column flex-md-row gap-2 justify-content-center">
+            <a href="{% url 'clientes:lista' %}" class="btn btn-outline-light">Volver sin guardar</a>
+            <button type="submit" class="btn btn-danger">Eliminar cliente</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

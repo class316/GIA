@@ -1,0 +1,27 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Repuestos{% endblock %}
+{% block heading %}Inventario de repuestos{% endblock %}
+{% block subtitle %}Controla stock, precios, proveedor y alertas de bajo inventario.{% endblock %}
+{% block content %}
+<section class="card module-hero">
+    <div>
+        <div class="module-eyebrow">Inventario</div>
+        <h3>Repuestos del taller</h3>
+        <div class="module-summary"><span class="summary-pill"><strong>{{ repuestos|length }}</strong> referencias</span><span class="summary-pill">Bajo stock automatico</span></div>
+    </div>
+    <a href="{% url 'repuestos:crear' %}" class="btn btn-primary">Registrar repuesto</a>
+</section>
+<section class="card table-card">
+    <div class="table-toolbar"><h4 class="table-title">Stock disponible</h4><span class="street-tag">Parts inventory</span></div>
+    <div class="table-responsive"><table class="table align-middle">
+        <thead><tr><th>Nombre</th><th>Referencia</th><th>Marca</th><th>Cantidad</th><th>Compra</th><th>Venta</th><th>Proveedor</th><th>Estado</th><th class="text-end">Opciones</th></tr></thead>
+        <tbody>
+        {% for repuesto in repuestos %}
+            <tr><td>{{ repuesto.nombre }}</td><td>{{ repuesto.referencia }}</td><td>{{ repuesto.marca|default:'-' }}</td><td>{{ repuesto.cantidad_disponible }}</td><td>${{ repuesto.precio_compra }}</td><td>${{ repuesto.precio_venta }}</td><td>{{ repuesto.proveedor|default:'-' }}</td><td><span class="badge {% if repuesto.estado == 'disponible' %}estado-finalizado{% elif repuesto.estado == 'bajo_stock' %}estado-pendiente{% else %}estado-cancelado{% endif %}">{{ repuesto.get_estado_display }}</span></td><td class="text-end"><span class="action-stack"><a class="btn btn-sm btn-primary" href="{% url 'repuestos:editar' repuesto.pk %}">Actualizar</a><a class="btn btn-sm btn-danger" href="{% url 'repuestos:eliminar' repuesto.pk %}">Eliminar</a></span></td></tr>
+        {% empty %}
+            <tr><td colspan="9" class="text-center py-4">Todavia no hay repuestos registrados.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table></div>
+</section>
+{% endblock %}

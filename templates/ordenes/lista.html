@@ -1,0 +1,56 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Servicios y reparaciones{% endblock %}
+{% block heading %}Servicios y reparaciones{% endblock %}
+{% block subtitle %}Controla los trabajos del taller, su responsable, estado y costo.{% endblock %}
+{% block content %}
+<section class="card module-hero">
+    <div>
+        <div class="module-eyebrow">Operacion de servicios</div>
+        <h3 class="mb-2">Ordenes del taller</h3>
+        <p class="mb-0 text-light">Monitorea cliente, vehiculo, mecanico, estado, evidencias y valor de cada servicio.</p>
+        <div class="module-summary">
+            <span class="summary-pill"><strong>{{ ordenes|length }}</strong> ordenes registradas</span>
+            <span class="summary-pill">Estados visuales por avance</span>
+        </div>
+    </div>
+    <a href="{% url 'ordenes:crear' %}" class="btn btn-primary">Crear orden</a>
+</section>
+
+<section class="street-stat-grid mb-3">
+    <div class="street-stat"><strong>{{ ordenes|length }}</strong><span>Servicios en el sistema</span></div>
+    <div class="street-stat"><strong>LIVE</strong><span>Estados visibles por avance</span></div>
+    <div class="street-stat"><strong>COP</strong><span>Control de costos del taller</span></div>
+</section>
+
+<section class="card table-card">
+    <div class="table-toolbar"><h4 class="table-title">Tablero de ordenes</h4><span class="street-tag">Service lane</span></div>
+    <div class="table-responsive"><table class="table align-middle">
+        <thead><tr><th>#</th><th>Cliente</th><th>Vehiculo</th><th>Servicio</th><th>Prioridad</th><th>Mecanico</th><th>Estado</th><th>Evidencias</th><th>Costo</th><th>Ingreso</th><th class="text-end">Opciones</th></tr></thead>
+        <tbody>
+        {% for orden in ordenes %}
+            <tr>
+                <td>{{ orden.pk }}</td>
+                <td>{{ orden.cliente.nombre }}</td>
+                <td>{{ orden.vehiculo.placa }} - {{ orden.vehiculo.marca }} {{ orden.vehiculo.modelo }}</td>
+                <td>{{ orden.get_tipo_servicio_display }}</td>
+                <td><span class="badge prioridad-{{ orden.prioridad }}">{{ orden.get_prioridad_display }}</span></td>
+                <td>{% if orden.mecanico %}{{ orden.mecanico.nombre }}{% else %}<span class="badge text-bg-secondary">Sin asignar</span>{% endif %}</td>
+                <td>
+                    {% if orden.estado == 'pendiente' %}<span class="badge estado-pendiente">{{ orden.get_estado_display }}</span>
+                    {% elif orden.estado == 'en_proceso' %}<span class="badge estado-en-proceso">{{ orden.get_estado_display }}</span>
+                    {% elif orden.estado == 'finalizado' %}<span class="badge estado-finalizado">{{ orden.get_estado_display }}</span>
+                    {% elif orden.estado == 'cancelado' %}<span class="badge estado-cancelado">{{ orden.get_estado_display }}</span>
+                    {% else %}<span class="badge text-bg-secondary">{{ orden.get_estado_display }}</span>{% endif %}
+                </td>
+                <td><a href="{% url 'ordenes:evidencias' orden.pk %}" class="btn btn-sm btn-outline-light">{{ orden.evidencias.count }} fotos</a></td>
+                <td>${{ orden.costo }}</td>
+                <td>{{ orden.fecha_ingreso }}</td>
+                <td class="text-end"><span class="action-stack"><a href="{% url 'ordenes:editar' orden.pk %}" class="btn btn-sm btn-primary">Actualizar</a><a href="{% url 'ordenes:eliminar' orden.pk %}" class="btn btn-sm btn-danger">Eliminar</a></span></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="11" class="text-center py-4">Todavia no hay servicios registrados.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table></div>
+</section>
+{% endblock %}

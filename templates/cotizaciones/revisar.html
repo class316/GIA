@@ -1,0 +1,17 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Revisar cotizacion{% endblock %}
+{% block heading %}Revisar cotizacion #{{ cotizacion.pk }}{% endblock %}
+{% block subtitle %}Define servicios sugeridos, costo estimado y estado.{% endblock %}
+{% block content %}
+<section class="card table-card mb-4">
+    <div class="table-toolbar"><h4 class="table-title">Informacion tecnica</h4><span class="street-tag">{{ cotizacion.vehiculo.placa }}</span></div>
+    <p><strong>Cliente:</strong> {{ cotizacion.cliente.nombre }} | <strong>Vehiculo:</strong> {{ cotizacion.vehiculo.placa }}</p>
+    <p><strong>Falla:</strong> {{ cotizacion.descripcion_falla }}</p>
+    <p><strong>Mecanico revisor:</strong> {% if cotizacion.mecanico_revisor %}{{ cotizacion.mecanico_revisor.nombre }}{% else %}Pendiente{% endif %}</p>
+    <p><strong>Diagnostico mecanico:</strong> {{ cotizacion.diagnostico_mecanico|default:'Pendiente' }}</p>
+    <p><strong>Servicios seleccionados:</strong> {% for codigo in cotizacion.servicios_catalogo %}{{ codigo }}{% if not forloop.last %}, {% endif %}{% empty %}Pendiente{% endfor %}</p>
+    <p><strong>Repuestos de inventario:</strong> {% for repuesto in cotizacion.repuestos_catalogo.all %}{{ repuesto.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}Pendiente{% endfor %}</p>
+    <p><strong>Repuestos recomendados:</strong> {{ cotizacion.repuestos_recomendados|default:'Pendiente' }}</p>
+</section>
+<div class="card form-card"><form method="post" novalidate>{% csrf_token %}{% include 'taller/formulario.html' %}<div class="d-flex gap-2 justify-content-end mt-4"><a class="btn btn-outline-light" href="{% url 'cotizaciones:lista' %}">Volver sin guardar</a><button class="btn btn-primary">Guardar cambios</button></div></form></div>
+{% endblock %}

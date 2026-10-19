@@ -1,0 +1,46 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Equipo mecánico{% endblock %}
+{% block heading %}Equipo mecánico{% endblock %}
+{% block subtitle %}Administra los datos del personal técnico y sus especialidades.{% endblock %}
+{% block content %}
+<section class="card module-hero">
+    <div>
+        <div class="module-eyebrow">Capacidad técnica</div>
+        <h3 class="mb-2">Equipo del taller</h3>
+        <p class="mb-0 text-light">Supervisa especialidad, estado operativo y cuenta relacionada de cada mecánico.</p>
+        <div class="module-summary">
+            <span class="summary-pill"><strong>{{ mecanicos|length }}</strong> mecánicos registrados</span>
+            <span class="summary-pill">Especialidades y disponibilidad</span>
+        </div>
+    </div>
+    <a href="{% url 'mecanicos:crear' %}" class="btn btn-primary">Registrar mecánico</a>
+</section>
+
+<section class="street-stat-grid mb-3">
+    <div class="street-stat"><strong>{{ mecanicos|length }}</strong><span>Integrantes del equipo tecnico</span></div>
+    <div class="street-stat"><strong>ON</strong><span>Estado operativo visible</span></div>
+    <div class="street-stat"><strong>PRO</strong><span>Especialidades del taller</span></div>
+</section>
+
+<section class="card table-card">
+    <div class="table-toolbar"><h4 class="table-title">Mecánicos registrados</h4><span class="street-tag">Pit crew</span></div>
+    <div class="table-responsive"><table class="table align-middle">
+        <thead><tr><th>Nombre</th><th>Teléfono</th><th>Correo</th><th>Especialidad</th><th>Estado</th><th>Cuenta relacionada</th><th class="text-end">Opciones</th></tr></thead>
+        <tbody>
+        {% for mecanico in mecanicos %}
+            <tr>
+                <td>{{ mecanico.nombre }}</td>
+                <td>{{ mecanico.telefono|default:'-' }}</td>
+                <td>{{ mecanico.correo|default:'Correo no registrado' }}</td>
+                <td>{{ mecanico.especialidad }}</td>
+                <td><span class="badge {% if mecanico.estado == 'activo' %}text-bg-success{% else %}text-bg-secondary{% endif %}">{{ mecanico.get_estado_display }}</span></td>
+                <td>{% if mecanico.usuario %}{{ mecanico.usuario.username }}{% else %}<span class="badge text-bg-warning">Sin cuenta</span>{% endif %}</td>
+                <td class="text-end"><span class="action-stack"><a href="{% url 'mecanicos:editar' mecanico.pk %}" class="btn btn-sm btn-primary">Actualizar</a><a href="{% url 'mecanicos:eliminar' mecanico.pk %}" class="btn btn-sm btn-danger">Eliminar</a></span></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="7" class="text-center py-4">Todavía no hay mecánicos registrados.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table></div>
+</section>
+{% endblock %}

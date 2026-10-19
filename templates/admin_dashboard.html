@@ -1,0 +1,251 @@
+{% extends 'taller/base.html' %}
+{% load static %}
+{% block title %}GIA - Admin{% endblock %}
+{% block titlebar %}Centro operativo GIA{% endblock %}
+{% block heading %}Centro operativo GIA{% endblock %}
+{% block subtitle %}Bienvenido {{ request.user.username }}. Una vista ejecutiva del taller, sin ruido visual.{% endblock %}
+{% block content %}
+<style>
+    .kpi-strip {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    .kpi-card {
+        min-height: 104px;
+        display: grid;
+        align-content: center;
+        padding: 1.1rem;
+        border-color: rgba(0,229,255,0.28);
+    }
+    .kpi-card small {
+        color: #cbd5e1;
+    }
+    .kpi-value {
+        display: block;
+        font-size: clamp(1.55rem, 2.7vw, 2.35rem);
+        line-height: 1;
+        font-weight: 700;
+        color: #ffd400;
+        text-shadow: 0 0 18px rgba(255,212,0,0.22);
+    }
+    .control-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 310px;
+        gap: 1rem;
+        align-items: stretch;
+        margin-bottom: 1rem;
+    }
+    .control-center {
+        min-height: 430px;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        padding: 1.25rem;
+        background:
+            radial-gradient(circle at 68% 45%, rgba(0,229,255,0.16), transparent 38%),
+            radial-gradient(circle at 16% 18%, rgba(255,43,214,0.10), transparent 34%),
+            linear-gradient(145deg, rgba(11,16,32,0.86), rgba(7,8,20,0.72));
+    }
+    .control-title {
+        max-width: 680px;
+    }
+    .control-title h1 {
+        font-size: clamp(2rem, 4vw, 4.4rem);
+        line-height: 0.98;
+        font-weight: 700;
+        margin-bottom: 0.85rem;
+    }
+    .control-title span {
+        color: #00e5ff;
+        text-shadow: 0 0 24px rgba(0,229,255,0.55), 0 0 18px rgba(255,43,214,0.18);
+    }
+    .holo-stage {
+        min-height: 265px;
+        display: grid;
+        place-items: center;
+        border-radius: 24px;
+        border: 1px solid rgba(0,229,255,0.30);
+        background:
+            radial-gradient(circle at center, rgba(0,229,255,0.18), transparent 58%),
+            radial-gradient(circle at 82% 20%, rgba(255,43,214,0.12), transparent 32%),
+            linear-gradient(180deg, rgba(11,16,32,0.20), rgba(7,8,20,0.34)),
+            repeating-linear-gradient(135deg, transparent 0 24px, rgba(255,255,255,0.025) 24px 26px);
+        overflow: hidden;
+        box-shadow: inset 0 0 46px rgba(0,229,255,0.10), 0 0 34px rgba(255,43,214,0.08);
+        position: relative;
+    }
+    .holo-stage::before {
+        content: "URBAN TUNING // GIA";
+        position: absolute;
+        left: 1rem;
+        bottom: 0.6rem;
+        color: rgba(255,255,255,0.055);
+        font-size: clamp(1.8rem, 5vw, 4.6rem);
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        transform: rotate(-5deg);
+        pointer-events: none;
+    }
+    .car-model {
+        display: block;
+        width: min(620px, 100%);
+        height: 300px;
+        filter: drop-shadow(0 0 25px rgba(0,229,255,0.72)) drop-shadow(0 0 14px rgba(255,106,0,0.32));
+        --poster-color: transparent;
+    }
+    .scan-line {
+        height: 2px;
+        width: 80%;
+        margin: -0.25rem auto 0;
+        background: linear-gradient(90deg, transparent, rgba(0,229,255,0.95), rgba(255,43,214,0.65), transparent);
+        box-shadow: 0 0 18px rgba(0,229,255,0.9);
+        animation: scan 2.4s ease-in-out infinite;
+    }
+    .status-bars {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.85rem;
+        margin-top: 1rem;
+    }
+    .status-item {
+        padding: 0.85rem;
+        border: 1px solid rgba(0,229,255,0.22);
+        border-radius: 18px;
+        background: rgba(11,16,32,0.58);
+    }
+    .status-item strong {
+        display: block;
+        font-size: 1.25rem;
+    }
+    .bar-track {
+        height: 8px;
+        margin-top: 0.65rem;
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(148,163,184,0.20);
+    }
+    .bar-fill {
+        height: 100%;
+        border-radius: inherit;
+        box-shadow: 0 0 16px currentColor;
+    }
+    .bar-pending { width: 35%; background: #ff6a00; color: #ff6a00; }
+    .bar-process { width: 70%; background: #00e5ff; color: #00e5ff; }
+    .bar-done { width: 45%; background: #00ff88; color: #00ff88; }
+    .side-widgets {
+        display: grid;
+        gap: 1rem;
+    }
+    .widget {
+        padding: 1rem;
+        border-radius: 20px;
+        border: 1px solid rgba(0,229,255,0.24);
+        background:
+            linear-gradient(145deg, rgba(11,16,32,0.70), rgba(17,24,39,0.58)),
+            repeating-linear-gradient(135deg, transparent 0 22px, rgba(255,43,214,0.035) 22px 24px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+    .widget-label {
+        color: #cbd5e1;
+        font-size: 0.84rem;
+    }
+    .widget-value {
+        display: block;
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: #ffffff;
+        text-shadow: 0 0 16px rgba(0,229,255,0.18);
+    }
+    .quick-actions {
+        padding: 1rem;
+    }
+    .quick-actions h4 {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    .quick-actions .btn {
+        min-height: 40px;
+        font-size: 0.88rem;
+    }
+    @keyframes scan { 0%, 100% { transform: translateX(-16%); opacity: 0.45; } 50% { transform: translateX(16%); opacity: 1; } }
+    @media (max-width: 1180px) {
+        .control-grid { grid-template-columns: 1fr; }
+        .side-widgets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 760px) {
+        .kpi-strip, .status-bars, .side-widgets { grid-template-columns: 1fr; }
+        .control-center { min-height: auto; padding: 1rem; }
+        .control-title h1 { font-size: 2.1rem; }
+        .holo-stage { min-height: 210px; }
+        .car-model { height: 210px; }
+        .quick-actions .row > [class*="col"] { flex: 0 0 100%; width: 100%; }
+    }
+    @media (max-width: 430px) {
+        .kpi-card { min-height: 88px; }
+        .control-title h1 { font-size: 1.75rem; }
+        .holo-stage { min-height: 170px; }
+        .car-model { height: 170px; }
+        .status-item { padding: 0.75rem; }
+    }
+</style>
+
+<section class="kpi-strip">
+    <div class="card kpi-card"><small>Clientes</small><span class="kpi-value">{{ total_clientes }}</span><small>registrados</small></div>
+    <div class="card kpi-card"><small>Mecánicos</small><span class="kpi-value">{{ total_mecanicos_activos }}</span><small>activos</small></div>
+    <div class="card kpi-card"><small>Vehículos</small><span class="kpi-value">{{ total_vehiculos }}</span><small>registrados</small></div>
+    <div class="card kpi-card"><small>Órdenes</small><span class="kpi-value">{{ total_ordenes_abiertas }}</span><small>abiertas</small></div>
+</section>
+
+<section class="control-grid">
+    <div class="card control-center">
+        <div class="control-title">
+            <p class="text-uppercase small text-info mb-2">Control center</p>
+            <h1>Operación <span>automotriz</span> inteligente</h1>
+            <p class="text-light mb-0">Un panel ejecutivo para leer carga operativa, servicios y capacidad del taller sin saturación.</p>
+        </div>
+
+        <div class="holo-stage my-3" aria-hidden="true">
+            <div class="w-100">
+                <model-viewer class="car-model" src="{% static 'gia/models/krieger/source/uberclear.glb' %}" auto-rotate camera-controls camera-orbit="35deg 72deg 6m" exposure="1.2" shadow-intensity="0"></model-viewer>
+                <div class="scan-line"></div>
+            </div>
+        </div>
+
+        <div class="status-bars">
+            <div class="status-item"><span class="small text-warning">Pendientes</span><strong>{{ ordenes_pendientes }}</strong><div class="bar-track"><div class="bar-fill bar-pending"></div></div></div>
+            <div class="status-item"><span class="small text-info">En proceso</span><strong>{{ ordenes_en_proceso }}</strong><div class="bar-track"><div class="bar-fill bar-process"></div></div></div>
+            <div class="status-item"><span class="small text-success">Finalizadas</span><strong>{{ ordenes_finalizadas }}</strong><div class="bar-track"><div class="bar-fill bar-done"></div></div></div>
+        </div>
+    </div>
+
+    <aside class="side-widgets">
+        <div class="card widget"><span class="widget-label">Órdenes hoy</span><span class="widget-value">{{ total_ordenes_abiertas }}</span><small class="text-light">trabajos abiertos</small></div>
+        <div class="card widget"><span class="widget-label">Ingresos del mes</span><span class="widget-value">{{ ingresos_mes_formateado }}</span><small class="text-light">en proceso/finalizadas</small></div>
+        <div class="card widget"><span class="widget-label">Gastos del mes</span><span class="widget-value">{{ gastos_mes_formateado }}</span><small class="text-light">operacion del taller</small></div>
+        <div class="card widget"><span class="widget-label">Costo repuestos</span><span class="widget-value">{{ costo_repuestos_mes_formateado }}</span><small class="text-light">usados en ordenes</small></div>
+        <div class="card widget"><span class="widget-label">Utilidad estimada</span><span class="widget-value">{{ utilidad_estimada_formateada }}</span><small class="text-light">ingresos - gastos - repuestos</small></div>
+        <div class="card widget"><span class="widget-label">Trabajos en proceso</span><span class="widget-value">{{ ordenes_en_proceso }}</span><small class="text-light">en taller</small></div>
+        <div class="card widget"><span class="widget-label">Mecánicos disponibles</span><span class="widget-value">{{ total_mecanicos_activos }}</span><small class="text-light">equipo activo</small></div>
+        <div class="card widget"><span class="widget-label">Herramientas disponibles</span><span class="widget-value">{{ herramientas_disponibles }}</span><small class="text-light">listas para uso</small></div>
+        <div class="card widget"><span class="widget-label">Herramientas en uso</span><span class="widget-value">{{ herramientas_en_uso }}</span><small class="text-light">asignadas a ordenes</small></div>
+        <div class="card widget"><span class="widget-label">En mantenimiento</span><span class="widget-value">{{ herramientas_mantenimiento }}</span><small class="text-light">equipos no disponibles</small></div>
+        <div class="card widget"><span class="widget-label">Clientes prioridad</span><span class="widget-value">{{ clientes_prioridad }}</span><small class="text-light">alta o urgente</small></div>
+    </aside>
+</section>
+
+<section class="card quick-actions">
+    <h4>Atajos rápidos</h4>
+    <div class="row g-2">
+        <div class="col-md"><a href="{% url 'clientes:crear' %}" class="btn btn-primary w-100">Registrar cliente</a></div>
+        <div class="col-md"><a href="{% url 'vehiculos:crear' %}" class="btn btn-primary w-100">Registrar vehículo</a></div>
+        <div class="col-md"><a href="{% url 'ordenes:crear' %}" class="btn btn-primary w-100">Crear orden</a></div>
+        <div class="col-md"><a href="{% url 'ordenes:lista' %}" class="btn btn-primary w-100">Ver órdenes</a></div>
+        <div class="col-md"><a href="{% url 'mecanicos:crear' %}" class="btn btn-primary w-100">Registrar mecánico</a></div>
+        <div class="col-md"><a href="{% url 'repuestos:crear' %}" class="btn btn-primary w-100">Registrar repuesto</a></div>
+        <div class="col-md"><a href="{% url 'herramientas:crear' %}" class="btn btn-primary w-100">Registrar herramienta</a></div>
+    </div>
+</section>
+
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+{% endblock %}

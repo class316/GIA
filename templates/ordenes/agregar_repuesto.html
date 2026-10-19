@@ -1,0 +1,5 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Agregar repuesto{% endblock %}
+{% block heading %}Agregar repuesto a orden #{{ orden.pk }}{% endblock %}
+{% block subtitle %}El stock se descuenta automaticamente al asignarlo.{% endblock %}
+{% block content %}<div class="card form-card"><form method="post" novalidate>{% csrf_token %}{% include 'taller/formulario.html' %}<div class="d-flex gap-2 justify-content-end mt-4"><a class="btn btn-outline-light" href="{% url 'ordenes:editar' orden.pk %}">Volver sin guardar</a><button class="btn btn-primary">Agregar repuesto</button></div></form></div>{% endblock %}

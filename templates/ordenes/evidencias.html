@@ -1,0 +1,29 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Evidencias{% endblock %}
+{% block heading %}Evidencias de la orden #{{ orden.pk }}{% endblock %}
+{% block subtitle %}Fotos registradas durante el servicio del vehiculo {{ orden.vehiculo.placa }}.{% endblock %}
+{% block content %}
+<section class="card module-hero">
+    <div>
+        <div class="module-eyebrow">Galeria del servicio</div>
+        <h3 class="mb-2">{{ orden.cliente.nombre }} - {{ orden.vehiculo.placa }}</h3>
+        <p class="mb-0 text-light">{{ orden.get_tipo_servicio_display }}</p>
+    </div>
+    <a href="{% url volver_url %}" class="btn btn-outline-light">Volver</a>
+</section>
+
+<section class="street-dashboard-grid">
+    {% for evidencia in orden.evidencias.all %}
+        <article class="card street-panel street-panel-md">
+            <span class="street-tag">{{ evidencia.get_tipo_display }}</span>
+            <a href="{{ evidencia.imagen.url }}" target="_blank" rel="noopener">
+                <img src="{{ evidencia.imagen.url }}" alt="Evidencia {{ evidencia.get_tipo_display }}" class="img-fluid rounded mt-3 mb-3" style="width:100%; max-height:360px; object-fit:cover; border:1px solid rgba(0,229,255,.25);">
+            </a>
+            <p class="mb-1">{{ evidencia.descripcion|default:"Sin descripcion adicional." }}</p>
+            <small class="text-light">{{ evidencia.fecha_hora|date:"d/m/Y H:i" }} - {{ evidencia.usuario.username|default:"Sistema" }}</small>
+        </article>
+    {% empty %}
+        <div class="card table-card street-panel-full text-center">Todavia no hay evidencias para esta orden.</div>
+    {% endfor %}
+</section>
+{% endblock %}

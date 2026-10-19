@@ -1,0 +1,20 @@
+{% extends 'usuarios/base.html' %}
+
+{% block title %}GIA - Eliminar cuenta{% endblock %}
+{% block heading %}Eliminar cuenta{% endblock %}
+{% block subtitle %}Confirma esta acción antes de quitar el ingreso al sistema.{% endblock %}
+
+{% block content %}
+<div class="card form-card text-center">
+    <h4>¿Eliminar la cuenta de {{ usuario_obj.username }}?</h4>
+    <p class="mb-4">Esta acción no se puede deshacer.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="d-flex flex-column flex-md-row gap-2 justify-content-center">
+            <a href="{% url 'usuarios:lista' %}" class="btn btn-outline-light">Volver sin guardar</a>
+            <button type="submit" class="btn btn-danger">Eliminar cuenta</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'taller/base.html' %}
+
+{% block title %}Auditoria de seguridad{% endblock %}
+{% block titlebar %}Auditoria de seguridad{% endblock %}
+{% block heading %}Auditoria de seguridad{% endblock %}
+{% block subtitle %}Consulta las acciones importantes del sistema y verifica que la cadena de hashes no haya sido alterada.{% endblock %}
+
+{% block content %}
+<div class="card table-card">
+    <div class="table-toolbar">
+        <div>
+            <p class="module-eyebrow mb-1">Cadena interna de integridad</p>
+            <h3 class="table-title">Registros protegidos</h3>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Verificar integridad</button>
+        </form>
+    </div>
+
+    {% if estado_integridad == 'valida' %}
+        <div class="alert alert-success">Cadena valida. Los registros coinciden con sus hashes.</div>
+    {% elif estado_integridad == 'alterada' %}
+        <div class="alert alert-danger">
+            Cadena alterada. Se detecto un problema
+            {% if registro_alterado %}en el registro #{{ registro_alterado.id }}{% endif %}.
+        </div>
+    {% endif %}
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                    <th>Accion</th>
+                    <th>Modulo</th>
+                    <th>Descripcion</th>
+                    <th>IP</th>
+                    <th>Hash actual</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in auditorias %}
+                    <tr {% if registro_alterado and item.id == registro_alterado.id %}class="table-danger"{% endif %}>
+                        <td>{{ item.fecha_hora|date:"d/m/Y H:i" }}</td>
+                        <td>{{ item.usuario_identificador|default:"Sistema" }}</td>
+                        <td>{{ item.accion }}</td>
+                        <td>{{ item.modulo }}</td>
+                        <td>{{ item.descripcion }}</td>
+                        <td>{{ item.ip|default:"-" }}</td>
+                        <td><code>{{ item.hash_actual|slice:":16" }}...</code></td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4">Todavia no hay registros de auditoria.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,5 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Eliminar repuesto{% endblock %}
+{% block heading %}Eliminar repuesto{% endblock %}
+{% block subtitle %}Confirma si deseas retirar esta referencia del inventario.{% endblock %}
+{% block content %}<div class="card form-card text-center"><h4>{{ repuesto.nombre }}</h4><p>No se eliminara si tiene informacion asociada.</p><form method="post">{% csrf_token %}<a class="btn btn-outline-light" href="{% url 'repuestos:lista' %}">Volver sin guardar</a><button class="btn btn-danger">Eliminar</button></form></div>{% endblock %}

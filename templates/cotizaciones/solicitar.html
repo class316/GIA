@@ -1,0 +1,5 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Solicitar cotizacion{% endblock %}
+{% block heading %}Solicitar cotizacion{% endblock %}
+{% block subtitle %}Describe la falla del vehiculo para que el taller revise y estime el servicio.{% endblock %}
+{% block content %}<div class="card form-card"><form method="post" novalidate>{% csrf_token %}{% include 'taller/formulario.html' %}<div class="d-flex gap-2 justify-content-end mt-4"><a class="btn btn-outline-light" href="{% url 'cliente_dashboard' %}">Volver sin guardar</a><button class="btn btn-primary">Enviar cotizacion</button></div></form></div>{% endblock %}

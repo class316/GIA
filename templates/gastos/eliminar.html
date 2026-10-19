@@ -1,0 +1,5 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Eliminar gasto{% endblock %}
+{% block heading %}Eliminar gasto{% endblock %}
+{% block subtitle %}Confirma si deseas eliminar este registro.{% endblock %}
+{% block content %}<div class="card form-card text-center"><h4>{{ gasto.concepto }}</h4><p>Esta accion elimina el movimiento de gasto.</p><form method="post">{% csrf_token %}<a class="btn btn-outline-light" href="{% url 'gastos:lista' %}">Volver sin guardar</a><button class="btn btn-danger">Eliminar</button></form></div>{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Gastos{% endblock %}
+{% block heading %}Gastos del taller{% endblock %}
+{% block subtitle %}Registra costos administrativos, mantenimiento, nomina y compras.{% endblock %}
+{% block content %}
+<section class="card module-hero"><div><div class="module-eyebrow">Finanzas</div><h3>Control de gastos</h3><div class="module-summary"><span class="summary-pill"><strong>{{ gastos|length }}</strong> registros</span><span class="summary-pill">Base para utilidad estimada</span></div></div><a href="{% url 'gastos:crear' %}" class="btn btn-primary">Registrar gasto</a></section>
+<section class="card table-card"><div class="table-toolbar"><h4 class="table-title">Movimientos de gasto</h4><span class="street-tag">Cost control</span></div><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Concepto</th><th>Categoria</th><th>Valor</th><th>Fecha</th><th>Descripcion</th><th class="text-end">Opciones</th></tr></thead><tbody>
+{% for gasto in gastos %}<tr><td>{{ gasto.concepto }}</td><td>{{ gasto.get_categoria_display }}</td><td>${{ gasto.valor }}</td><td>{{ gasto.fecha }}</td><td>{{ gasto.descripcion|default:'-' }}</td><td class="text-end"><span class="action-stack"><a class="btn btn-sm btn-primary" href="{% url 'gastos:editar' gasto.pk %}">Actualizar</a><a class="btn btn-sm btn-danger" href="{% url 'gastos:eliminar' gasto.pk %}">Eliminar</a></span></td></tr>{% empty %}<tr><td colspan="6" class="text-center py-4">Todavia no hay gastos registrados.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

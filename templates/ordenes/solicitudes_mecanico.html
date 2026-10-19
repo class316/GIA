@@ -1,0 +1,28 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Solicitudes disponibles{% endblock %}
+{% block heading %}Solicitudes disponibles{% endblock %}
+{% block subtitle %}Servicios pendientes que aun no tienen mecanico asignado.{% endblock %}
+{% block content %}
+<section class="card module-hero">
+    <div>
+        <div class="module-eyebrow">Bandeja del taller</div>
+        <h3 class="mb-2">Servicios por aceptar</h3>
+        <p class="mb-0 text-light">Toma solicitudes pendientes y conviertelas en trabajos asignados a tu estacion.</p>
+    </div>
+    <span class="street-icon">&#128229;</span>
+</section>
+
+<div class="card table-card">
+    <div class="table-toolbar"><h4 class="table-title">Solicitudes en espera</h4><span class="street-tag">Open lane</span></div>
+    <div class="table-responsive"><table class="table align-middle">
+        <thead><tr><th>Cliente</th><th>Vehiculo</th><th>Servicio</th><th>Descripcion</th><th>Costo sugerido</th><th>Ingreso</th><th class="text-end">Opciones</th></tr></thead>
+        <tbody>
+        {% for orden in ordenes %}
+            <tr><td>{{ orden.cliente.nombre }}</td><td>{{ orden.vehiculo.placa }} - {{ orden.vehiculo.marca }} {{ orden.vehiculo.modelo }}</td><td>{{ orden.get_tipo_servicio_display }}</td><td>{{ orden.descripcion }}</td><td>${{ orden.costo }}</td><td>{{ orden.fecha_ingreso }}</td><td class="text-end"><a href="{% url 'mecanico_aceptar' orden.pk %}" class="btn btn-sm btn-primary">Aceptar servicio</a></td></tr>
+        {% empty %}
+            <tr><td colspan="7" class="text-center py-4">No hay solicitudes disponibles por ahora.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table></div>
+</div>
+{% endblock %}

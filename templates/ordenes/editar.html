@@ -1,0 +1,51 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Actualizar orden{% endblock %}
+{% block heading %}Actualizar orden{% endblock %}
+{% block subtitle %}Modifica los datos del servicio #{{ orden.pk }}.{% endblock %}
+{% block content %}
+<div class="card form-card"><form method="post" novalidate>{% csrf_token %}{% include 'taller/formulario.html' %}
+    <div class="d-flex flex-column flex-md-row gap-2 justify-content-end mt-4"><a href="{% url 'ordenes:lista' %}" class="btn btn-outline-light">Volver sin guardar</a><button type="submit" class="btn btn-primary">Guardar cambios</button></div>
+</form></div>
+
+<section class="street-dashboard-grid mt-4">
+    <div class="card table-card street-panel-lg">
+        <div class="table-toolbar"><h4 class="table-title">Repuestos usados</h4><a class="btn btn-sm btn-primary" href="{% url 'ordenes:agregar_repuesto' orden.pk %}">Agregar repuesto</a></div>
+        <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Repuesto</th><th>Cantidad</th><th>Subtotal</th></tr></thead><tbody>
+        {% for item in orden.repuestos_usados.all %}<tr><td>{{ item.repuesto.nombre }}</td><td>{{ item.cantidad }}</td><td>${{ item.subtotal }}</td></tr>{% empty %}<tr><td colspan="3" class="text-center py-3">Sin repuestos asignados.</td></tr>{% endfor %}
+        </tbody></table></div>
+    </div>
+    <div class="card table-card street-panel-md">
+        <div class="table-toolbar"><h4 class="table-title">Herramientas</h4><a class="btn btn-sm btn-primary" href="{% url 'ordenes:agregar_herramienta' orden.pk %}">Asignar herramienta</a></div>
+        <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Equipo</th><th>Estado</th></tr></thead><tbody>
+        {% for item in orden.herramientas_necesarias.all %}<tr><td>{{ item.herramienta.nombre }}</td><td>{{ item.herramienta.get_estado_display }}</td></tr>{% empty %}<tr><td colspan="2" class="text-center py-3">Sin herramientas asignadas.</td></tr>{% endfor %}
+        </tbody></table></div>
+    </div>
+</section>
+<section class="card table-card mt-4">
+    <div class="table-toolbar"><h4 class="table-title">Evidencias del servicio</h4><a class="btn btn-sm btn-outline-light" href="{% url 'ordenes:evidencias' orden.pk %}">Ver galeria</a></div>
+    <div class="row g-2">
+        {% for evidencia in orden.evidencias.all|slice:":4" %}
+            <div class="col-6 col-md-3">
+                <a href="{{ evidencia.imagen.url }}" target="_blank" rel="noopener">
+                    <img src="{{ evidencia.imagen.url }}" alt="Evidencia {{ evidencia.get_tipo_display }}" class="img-fluid rounded" style="height:130px;width:100%;object-fit:cover;border:1px solid rgba(0,229,255,.25);">
+                </a>
+                <small class="d-block text-light mt-1">{{ evidencia.get_tipo_display }}</small>
+            </div>
+        {% empty %}
+            <p class="text-light mb-0">Todavia no hay evidencias registradas.</p>
+        {% endfor %}
+    </div>
+</section>
+{{ precios_servicio|json_script:"precios-servicio" }}
+{{ partes_servicio|json_script:"partes-servicio" }}
+<script>
+    const preciosServicio = JSON.parse(document.getElementById('precios-servicio').textContent);
+    const tipoServicio = document.getElementById('id_tipo_servicio');
+    const costo = document.getElementById('id_costo_mano_obra');
+    if (tipoServicio && costo) {
+        tipoServicio.addEventListener('change', function () {
+            costo.value = preciosServicio[this.value] ?? 0;
+        });
+    }
+</script>
+{% endblock %}

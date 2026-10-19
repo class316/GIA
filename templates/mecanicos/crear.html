@@ -1,0 +1,17 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Registrar mecánico{% endblock %}
+{% block heading %}Registrar mecánico{% endblock %}
+{% block subtitle %}Selecciona la cuenta de acceso y completa los datos del mecánico.{% endblock %}
+{% block content %}
+<div class="card form-card">
+    <p class="mb-4">Primero elige la <strong>Cuenta de acceso del mecánico</strong> creada en Personal y accesos. Luego completa teléfono, correo, especialidad y estado.</p>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'taller/formulario.html' %}
+        <div class="d-flex flex-column flex-md-row gap-2 justify-content-end mt-4">
+            <a href="{% url 'mecanicos:lista' %}" class="btn btn-outline-light">Volver sin guardar</a>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

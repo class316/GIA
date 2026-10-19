@@ -1,0 +1,66 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Cotizaciones{% endblock %}
+{% block heading %}Cotizaciones{% endblock %}
+{% block subtitle %}Revisa solicitudes de clientes y conviertelas en ordenes de trabajo.{% endblock %}
+{% block content %}
+<section class="card table-card">
+    <div class="table-toolbar">
+        <h4 class="table-title">Cotizaciones recibidas</h4>
+        <span class="street-tag">Quote desk</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Vehiculo</th>
+                    <th>Prioridad</th>
+                    <th>Estado</th>
+                    <th>Mecanico</th>
+                    <th>Costo</th>
+                    <th>Servicios</th>
+                    <th>Repuestos</th>
+                    <th>Orden</th>
+                    <th>Comentarios</th>
+                    <th class="text-end">Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cotizacion in cotizaciones %}
+                    <tr>
+                        <td>{{ cotizacion.pk }}</td>
+                        <td>{{ cotizacion.cliente.nombre }}</td>
+                        <td>{{ cotizacion.vehiculo.placa }}</td>
+                        <td><span class="badge prioridad-{{ cotizacion.prioridad }}">{{ cotizacion.get_prioridad_display }}</span></td>
+                        <td>{{ cotizacion.get_estado_display }}</td>
+                        <td>{% if cotizacion.mecanico_revisor %}{{ cotizacion.mecanico_revisor.nombre }}{% else %}-{% endif %}</td>
+                        <td>${{ cotizacion.costo_estimado }}</td>
+                        <td>{% for codigo in cotizacion.servicios_catalogo %}<span class="badge text-bg-info">{{ codigo }}</span> {% empty %}Pendiente{% endfor %}</td>
+                        <td>{% for repuesto in cotizacion.repuestos_catalogo.all %}{{ repuesto.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}Pendiente{% endfor %}</td>
+                        <td>
+                            {% if cotizacion.orden_generada %}
+                                <span class="badge estado-finalizado">Orden creada</span>
+                                <a class="btn btn-sm btn-outline-light mt-1" href="{% url 'ordenes:editar' cotizacion.orden_generada.pk %}">Ver orden</a>
+                            {% else %}
+                                <span class="badge text-bg-secondary">Sin orden</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ cotizacion.servicios_sugeridos|default:cotizacion.repuestos_recomendados|default:'Pendiente'|truncatechars:60 }}</td>
+                        <td class="text-end">
+                            <span class="action-stack">
+                                <a class="btn btn-sm btn-primary" href="{% url 'cotizaciones:revisar' cotizacion.pk %}">Revisar</a>
+                                {% if cotizacion.estado == 'aprobada' and not cotizacion.orden_generada %}
+                                    <a class="btn btn-sm btn-primary" href="{% url 'cotizaciones:convertir_orden' cotizacion.pk %}">Crear orden</a>
+                                {% endif %}
+                            </span>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="12" class="text-center py-4">No hay cotizaciones registradas.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

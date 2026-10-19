@@ -1,0 +1,19 @@
+{% extends 'taller/base.html' %}
+
+{% block title %}GIA - Actualizar estado{% endblock %}
+{% block titlebar %}Estacion de trabajo{% endblock %}
+{% block heading %}Actualizar estado{% endblock %}
+{% block subtitle %}Cambia el avance de la orden #{{ orden.pk }} asignada a tu trabajo.{% endblock %}
+
+{% block content %}
+<div class="card form-card">
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'taller/formulario.html' %}
+        <div class="d-flex flex-column flex-md-row gap-2 justify-content-end mt-4">
+            <a href="{% url 'mecanico_dashboard' %}" class="btn btn-outline-light">Volver sin guardar</a>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

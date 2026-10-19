@@ -1,0 +1,41 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Crear orden{% endblock %}
+{% block heading %}Crear orden{% endblock %}
+{% block subtitle %}Registra el servicio, el vehiculo y el mecanico responsable.{% endblock %}
+{% block content %}
+<div class="card form-card">
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'taller/formulario.html' %}
+        <div class="card table-card mt-3">
+            <div class="table-toolbar"><h4 class="table-title">Partes sugeridas</h4><span class="street-tag">Segun servicio</span></div>
+            <p class="text-light mb-0" id="partes_sugeridas">Selecciona un tipo de servicio para ver partes comunes que se pueden cambiar.</p>
+        </div>
+        <div class="d-flex flex-column flex-md-row gap-2 justify-content-end mt-4">
+            <a href="{% url 'ordenes:lista' %}" class="btn btn-outline-light">Volver sin guardar</a>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+    </form>
+</div>
+{{ precios_servicio|json_script:"precios-servicio" }}
+{{ partes_servicio|json_script:"partes-servicio" }}
+<script>
+    const preciosServicio = JSON.parse(document.getElementById('precios-servicio').textContent);
+    const partesServicio = JSON.parse(document.getElementById('partes-servicio').textContent);
+    const tipoServicio = document.getElementById('id_tipo_servicio');
+    const costo = document.getElementById('id_costo_mano_obra');
+    const partesSugeridas = document.getElementById('partes_sugeridas');
+
+    function actualizarServicio() {
+        const tipo = tipoServicio.value;
+        if (costo) { costo.value = preciosServicio[tipo] ?? 0; }
+        const partes = partesServicio[tipo] || [];
+        partesSugeridas.textContent = partes.length ? partes.join(', ') : 'Sin partes sugeridas para este servicio.';
+    }
+
+    if (tipoServicio) {
+        tipoServicio.addEventListener('change', actualizarServicio);
+        actualizarServicio();
+    }
+</script>
+{% endblock %}

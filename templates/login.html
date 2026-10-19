@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#ff6a00">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="GIA">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>GIA - Iniciar sesión</title>
+    <link rel="manifest" href="{% static 'gia/pwa/manifest.json' %}">
+    <link rel="icon" type="image/svg+xml" href="{% static 'gia/pwa/icon.svg' %}">
+    <link rel="apple-touch-icon" href="{% static 'gia/pwa/icon.svg' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        html, body { width: 100%; max-width: 100%; }
+        :root { --accent:#ff6a00; --accent-2:#ff2bd6; --cyan:#00e5ff; --yellow:#ffd400; --panel:rgba(11,16,32,0.80); }
+        body { min-height:100vh; display:flex; justify-content:center; align-items:center; padding:clamp(.75rem,2vw,1.25rem); font-family:'Poppins',sans-serif; color:#fff; background:radial-gradient(circle at 14% 16%,rgba(0,229,255,.18),transparent 30%),radial-gradient(circle at 84% 14%,rgba(255,43,214,.15),transparent 28%),radial-gradient(circle at 78% 88%,rgba(255,106,0,.17),transparent 32%),linear-gradient(135deg,#070814 0%,#0b1020 48%,#111827 100%); overflow-x:hidden; overflow-y:auto; }
+        body::before { content:""; position:fixed; inset:0; background:linear-gradient(transparent 0 92%,rgba(0,229,255,.10) 93% 100%),linear-gradient(90deg,transparent 0 92%,rgba(0,229,255,.08) 93% 100%); background-size:56px 56px; transform:perspective(700px) rotateX(62deg) translateY(18%); transform-origin:bottom; opacity:.32; pointer-events:none; }
+        body::after { content:""; position:fixed; inset:0; pointer-events:none; background:radial-gradient(circle at 11% 72%,rgba(0,229,255,.20) 0 2px,transparent 3px),radial-gradient(circle at 18% 77%,rgba(255,43,214,.18) 0 2px,transparent 3px),radial-gradient(circle at 90% 20%,rgba(255,212,0,.14) 0 2px,transparent 3px),repeating-linear-gradient(135deg,transparent 0 20px,rgba(255,255,255,.022) 20px 22px); background-size:140px 140px,180px 180px,160px 160px,auto; opacity:.62; mix-blend-mode:screen; }
+        .login-shell { width:min(1100px,94vw); max-width:94vw; position:relative; z-index:1; }
+        .login-card { display:grid; grid-template-columns:minmax(0,1fr) minmax(300px,360px); gap:clamp(1rem,2vw,1.5rem); align-items:center; background:var(--panel); backdrop-filter:blur(18px); border:1px solid rgba(0,229,255,.32); border-radius:34px; padding:clamp(1rem,2vw,1.5rem); box-shadow:0 28px 80px rgba(0,0,0,.58),0 0 34px rgba(255,43,214,.10); overflow:hidden; position:relative; }
+        .login-card::before { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(115deg,rgba(0,229,255,.10),transparent 35%,rgba(255,43,214,.08) 70%,rgba(255,106,0,.08)),repeating-linear-gradient(135deg,transparent 0 28px,rgba(255,255,255,.025) 28px 30px); }
+        .login-card > * { position:relative; z-index:1; }
+        .login-visual { min-height:clamp(390px,58vh,500px); display:grid; align-content:center; gap:1rem; padding:clamp(1.15rem,2.5vw,2rem); border-radius:28px; border:1px solid rgba(0,229,255,.26); background:radial-gradient(circle at center,rgba(0,229,255,.18),transparent 55%),radial-gradient(circle at 96% 16%,rgba(255,43,214,.14),transparent 30%),linear-gradient(145deg,rgba(11,16,32,.78),rgba(7,8,20,.44)); overflow:hidden; position:relative; }
+        .login-visual::after { content:"STREET GIA"; position:absolute; right:-.8rem; top:.8rem; color:rgba(255,255,255,.045); font-size:clamp(2.4rem,8vw,6rem); font-weight:700; letter-spacing:.12em; transform:rotate(-8deg); pointer-events:none; }
+        .login-visual .display-5 { font-size:clamp(2rem,4vw,3.05rem); line-height:1.08; }
+        .login-form-panel { padding:clamp(.75rem,2vw,1.4rem); min-width:0; }
+        .brand-mark { width:54px; height:54px; border-radius:16px; display:grid; place-items:center; margin:0 auto 1rem; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:0 16px 32px rgba(255,106,0,.28),0 0 28px rgba(255,43,214,.22); font-size:1.6rem; }
+        .holo-car { width:min(520px,100%); margin:0 auto; padding:1rem 1rem .65rem; border-radius:24px; border:1px solid rgba(0,229,255,.30); background:linear-gradient(180deg,rgba(0,229,255,.11),rgba(11,16,32,.38)),repeating-linear-gradient(135deg,transparent 0 22px,rgba(255,43,214,.035) 22px 24px); box-shadow:inset 0 0 32px rgba(0,229,255,.12),0 0 38px rgba(0,229,255,.18),0 0 24px rgba(255,43,214,.10); animation:floatHolo 4.8s ease-in-out infinite; overflow:hidden; position:relative; }
+        .holo-car::before { content:""; position:absolute; inset:14px; border-radius:20px; border-top:2px solid rgba(255,212,0,.24); border-bottom:2px solid rgba(255,43,214,.18); pointer-events:none; }
+        .car-model { display:block; width:100%; height:clamp(210px,34vh,280px); filter:drop-shadow(0 0 18px rgba(0,229,255,.72)) drop-shadow(0 0 10px rgba(255,106,0,.30)); --poster-color: transparent; }
+        .scan-line { height:2px; margin-top:.7rem; background:linear-gradient(90deg,transparent,rgba(0,229,255,.95),rgba(255,43,214,.70),transparent); box-shadow:0 0 16px rgba(0,229,255,.9); animation:scan 2.4s ease-in-out infinite; }
+        .visual-kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; }
+        .visual-kpis div { padding:.85rem; border-radius:16px; border:1px solid rgba(0,229,255,.24); background:rgba(11,16,32,.62); color:#cbd5e1; box-shadow:inset 0 0 18px rgba(0,229,255,.05); }
+        .visual-kpis strong { display:block; color:var(--yellow); font-size:1.05rem; text-shadow:0 0 14px rgba(255,212,0,.28); }
+        @keyframes floatHolo { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+        @keyframes scan { 0%,100%{transform:translateX(-18%);opacity:.45} 50%{transform:translateX(18%);opacity:1} }
+        .input-group-text { background:rgba(7,8,20,.96); border:none; color:var(--cyan); border-radius:14px 0 0 14px; }
+        .form-control { background:rgba(226,232,240,.96); border:1px solid rgba(0,229,255,.20); border-radius:0 14px 14px 0; min-height:50px; }
+        .password-input { border-radius:0; }
+        .password-toggle { border:none; background:rgba(7,8,20,.96); color:var(--cyan); border-radius:0 14px 14px 0; min-width:50px; }
+        .btn-login { min-height:52px; border:none; border-radius:14px; color:#fff; font-weight:700; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:0 14px 34px rgba(255,106,0,.30),0 0 24px rgba(255,43,214,.20); transition:.2s ease; }
+        .btn-login:hover { color:#fff; transform:translateY(-2px); box-shadow:0 18px 40px rgba(255,106,0,.40),0 0 30px rgba(0,229,255,.20); }
+        .form-check-input:checked { background-color:var(--accent); border-color:var(--accent); }
+        .small-muted { color:rgba(255,255,255,.72); }
+        .pwa-note { margin-top:1rem; padding:.75rem; border-radius:16px; border:1px solid rgba(255,212,0,.28); background:rgba(255,212,0,.07); color:#fff6bf; font-size:.85rem; }
+        @media (max-width:1120px){ .login-card{grid-template-columns:1fr}.login-shell{width:min(760px,94vw)}.login-visual{min-height:auto}.visual-kpis{grid-template-columns:repeat(3,1fr)} }
+        @media (max-width:620px){ .login-shell{width:94vw}.login-card{border-radius:24px;padding:.85rem}.login-visual{padding:1rem;border-radius:20px}.visual-kpis{grid-template-columns:1fr}.login-visual .display-5{font-size:1.85rem}.car-model{height:190px}.holo-car{padding:.75rem}.login-form-panel{padding:.75rem 0}.input-group{flex-wrap:nowrap}.form-control{min-width:0}.btn-login{width:100%} }
+        @media (max-width:420px){ body{align-items:flex-start}.login-visual .display-5{font-size:1.55rem}.small-muted{font-size:.88rem}.visual-kpis{display:none}.car-model{height:160px}.brand-mark{width:46px;height:46px}.login-card{gap:.75rem} }
+    </style>
+</head>
+<body>
+<main class="login-shell">
+    <section class="login-card">
+        <div class="login-visual">
+            <div>
+                <p class="text-info text-uppercase small mb-2">Automotive control system</p>
+                <h1 class="display-5 fw-bold mb-3">GIA - Sistema de Gestión Automotriz</h1>
+                <p class="small-muted">Panel seguro para controlar clientes, vehículos, servicios y operación técnica del taller.</p>
+            </div>
+            <div class="holo-car" aria-hidden="true">
+                <model-viewer class="car-model" src="{% static 'gia/models/carson/source/carsonfastback.glb' %}" auto-rotate camera-controls camera-orbit="35deg 72deg 6.2m" exposure="1.2" shadow-intensity="0"></model-viewer>
+                <div class="scan-line"></div>
+            </div>
+            <div class="visual-kpis"><div><strong>24/7</strong>Acceso</div><div><strong>Roles</strong>Seguro</div><div><strong>GIA</strong>Taller</div></div>
+        </div>
+        <div class="login-form-panel">
+            <div class="text-center mb-4"><div class="brand-mark">&#128663;</div><h2 class="h4 fw-bold mb-2">Iniciar sesión</h2><p class="small-muted mb-0">Ingresa con tus credenciales del sistema.</p></div>
+            {% if messages %}{% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }} py-2">{{ message }}</div>{% endfor %}{% endif %}
+            <form method="post" novalidate id="loginForm">
+                {% csrf_token %}
+                <div class="mb-3"><label for="username" class="form-label">Usuario</label><div class="input-group"><span class="input-group-text">&#128100;</span><input class="form-control" type="text" name="username" id="username" placeholder="Ingresa tu usuario" autocomplete="username" value="{{ username_value|default:'' }}"></div></div>
+                <div class="mb-3"><label for="password" class="form-label">Contraseña</label><div class="input-group"><span class="input-group-text">&#128274;</span><input class="form-control password-input" type="password" name="password" id="password" placeholder="Ingresa tu contraseña" autocomplete="current-password"><button class="password-toggle" type="button" id="togglePassword" aria-label="Mostrar u ocultar contraseña">&#128065;</button></div></div>
+                <div class="d-flex justify-content-between align-items-center mb-4"><div class="form-check"><input class="form-check-input" type="checkbox" id="rememberUser"><label class="form-check-label" for="rememberUser">Recordar usuario</label></div></div>
+                <button class="btn btn-login w-100" type="submit">Iniciar sesión</button>
+            </form>
+            <div class="pwa-note">GIA puede usarse desde computador o instalarse en celular como aplicacion web progresiva.</div>
+        </div>
+    </section>
+</main>
+<script>
+    const usernameInput = document.getElementById('username');
+    const rememberInput = document.getElementById('rememberUser');
+    const savedUsername = localStorage.getItem('gia_username');
+    if (!usernameInput.value && savedUsername) { usernameInput.value = savedUsername; rememberInput.checked = true; }
+    document.getElementById('loginForm').addEventListener('submit', function () {
+        if (rememberInput.checked && usernameInput.value.trim()) { localStorage.setItem('gia_username', usernameInput.value.trim()); } else { localStorage.removeItem('gia_username'); }
+    });
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordInput = document.getElementById('password');
+        const isHidden = passwordInput.type === 'password';
+        passwordInput.type = isHidden ? 'text' : 'password';
+        this.textContent = isHidden ? '🙈' : '👁';
+    });
+</script>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('/service-worker.js').catch(function () {});
+        });
+    }
+</script>
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+</body>
+</html>

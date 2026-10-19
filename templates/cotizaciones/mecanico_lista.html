@@ -1,0 +1,24 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Cotizaciones mecanico{% endblock %}
+{% block heading %}Cotizaciones por revisar{% endblock %}
+{% block subtitle %}Apoya al administrador sugiriendo servicio y repuestos segun la falla reportada.{% endblock %}
+{% block content %}
+<section class="card module-hero">
+    <div>
+        <div class="module-eyebrow">Revision tecnica</div>
+        <h3>Cotizaciones del taller</h3>
+        <p class="text-light mb-0">El cliente reporta una falla; tu sugieres diagnostico, servicio y repuestos necesarios.</p>
+    </div>
+    <span class="street-icon">&#128295;</span>
+</section>
+<section class="card table-card">
+    <div class="table-toolbar"><h4 class="table-title">Solicitudes pendientes</h4><span class="street-tag">Technical quote</span></div>
+    <div class="table-responsive"><table class="table align-middle"><thead><tr><th>#</th><th>Cliente</th><th>Vehiculo</th><th>Prioridad</th><th>Estado</th><th>Falla</th><th>Revisor</th><th class="text-end">Opciones</th></tr></thead><tbody>
+    {% for cotizacion in cotizaciones %}
+        <tr><td>{{ cotizacion.pk }}</td><td>{{ cotizacion.cliente.nombre }}</td><td>{{ cotizacion.vehiculo.placa }}</td><td><span class="badge prioridad-{{ cotizacion.prioridad }}">{{ cotizacion.get_prioridad_display }}</span></td><td>{{ cotizacion.get_estado_display }}</td><td>{{ cotizacion.descripcion_falla|truncatechars:80 }}</td><td>{% if cotizacion.mecanico_revisor %}{{ cotizacion.mecanico_revisor.nombre }}{% else %}-{% endif %}</td><td class="text-end"><a class="btn btn-sm btn-primary" href="{% url 'cotizaciones:mecanico_sugerir' cotizacion.pk %}">Sugerir servicio</a></td></tr>
+    {% empty %}
+        <tr><td colspan="8" class="text-center py-4">No hay cotizaciones pendientes.</td></tr>
+    {% endfor %}
+    </tbody></table></div>
+</section>
+{% endblock %}

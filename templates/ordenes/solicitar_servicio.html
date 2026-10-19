@@ -1,0 +1,55 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Solicitar servicio{% endblock %}
+{% block heading %}Solicitar servicio{% endblock %}
+{% block subtitle %}Elige tu vehiculo, el tipo de servicio y agrega un comentario opcional para el taller.{% endblock %}
+{% block content %}
+<div class="card form-card">
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'taller/formulario.html' %}
+        <div class="row g-3 mt-1">
+            <div class="col-md-6">
+                <label class="form-label" for="costo_sugerido">Costo sugerido</label>
+                <input class="form-control" type="text" id="costo_sugerido" value="$0 COP" readonly>
+                <div class="form-text">El taller podra ajustar el valor final si el diagnostico lo requiere.</div>
+            </div>
+            <div class="col-12">
+                <div class="card table-card">
+                    <div class="table-toolbar"><h4 class="table-title">Partes que se podrian cambiar</h4><span class="street-tag">Referencia</span></div>
+                    <p class="text-light mb-0" id="partes_sugeridas">Selecciona un servicio para ver partes comunes.</p>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-column flex-md-row gap-2 justify-content-end mt-4">
+            <a href="{% url 'cliente_dashboard' %}" class="btn btn-outline-light">Volver sin guardar</a>
+            <button type="submit" class="btn btn-primary">Crear solicitud</button>
+        </div>
+    </form>
+</div>
+{{ precios_servicio|json_script:"precios-servicio" }}
+{{ partes_servicio|json_script:"partes-servicio" }}
+<script>
+    const preciosServicio = JSON.parse(document.getElementById('precios-servicio').textContent);
+    const partesServicio = JSON.parse(document.getElementById('partes-servicio').textContent);
+    const tipoServicio = document.getElementById('id_tipo_servicio');
+    const costoSugerido = document.getElementById('costo_sugerido');
+    const partesSugeridas = document.getElementById('partes_sugeridas');
+
+    function actualizarCostoSugerido() {
+        const tipo = tipoServicio.value;
+        const valor = preciosServicio[tipo] ?? 0;
+        costoSugerido.value = new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            maximumFractionDigits: 0
+        }).format(valor);
+        const partes = partesServicio[tipo] || [];
+        partesSugeridas.textContent = partes.length ? partes.join(', ') : 'Sin partes sugeridas para este servicio.';
+    }
+
+    if (tipoServicio && costoSugerido) {
+        tipoServicio.addEventListener('change', actualizarCostoSugerido);
+        actualizarCostoSugerido();
+    }
+</script>
+{% endblock %}

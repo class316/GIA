@@ -1,0 +1,41 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Actualizar trabajo{% endblock %}
+{% block heading %}Actualizar trabajo{% endblock %}
+{% block subtitle %}Actualiza estado, costo y observaciones del servicio #{{ orden.pk }}.{% endblock %}
+{% block content %}
+<section class="card table-card mb-4">
+    <div class="table-toolbar"><h4 class="table-title">Orden de trabajo</h4><span class="street-tag">Orden #{{ orden.pk }}</span></div>
+    <div class="street-stat-grid">
+        <div class="street-stat"><strong>Falla</strong><span>{{ orden.falla_reportada|default:orden.descripcion|default:'Sin descripcion' }}</span></div>
+        <div class="street-stat"><strong>Trabajo</strong><span>{{ orden.trabajo_a_realizar|default:'Pendiente por definir' }}</span></div>
+        <div class="street-stat"><strong>Prioridad</strong><span>{{ orden.get_prioridad_display }}</span></div>
+    </div>
+    <div class="row g-3 mt-2">
+        <div class="col-lg-6">
+            <h5>Herramientas</h5>
+            <ul>{% for item in orden.herramientas_necesarias.all %}<li>{{ item.herramienta.nombre }}</li>{% empty %}<li>Sin herramientas asignadas.</li>{% endfor %}</ul>
+        </div>
+        <div class="col-lg-6">
+            <h5>Repuestos</h5>
+            <ul>{% for item in orden.repuestos_usados.all %}<li>{{ item.repuesto.nombre }} x {{ item.cantidad }}</li>{% empty %}<li>Sin repuestos asignados.</li>{% endfor %}</ul>
+        </div>
+    </div>
+</section>
+<div class="card form-card">
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'taller/formulario.html' %}
+        <div class="d-flex flex-column flex-md-row gap-2 justify-content-end mt-4">
+            <a href="{% url 'mecanico_mis_trabajos' %}" class="btn btn-outline-light">Volver sin guardar</a>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+    </form>
+</div>
+<section class="card table-card mt-4">
+    <div class="table-toolbar">
+        <h4 class="table-title">Evidencias moviles</h4>
+        <a href="{% url 'ordenes:agregar_evidencia' orden.pk %}" class="btn btn-sm btn-primary">Agregar evidencia</a>
+    </div>
+    <p class="text-light mb-0">Desde celular puedes usar la camara para registrar fotos antes, durante o despues del servicio.</p>
+</section>
+{% endblock %}

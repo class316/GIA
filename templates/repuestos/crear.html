@@ -1,0 +1,5 @@
+{% extends 'taller/base.html' %}
+{% block title %}GIA - Registrar repuesto{% endblock %}
+{% block heading %}Registrar repuesto{% endblock %}
+{% block subtitle %}Agrega una referencia al inventario del taller.{% endblock %}
+{% block content %}<div class="card form-card"><form method="post" novalidate>{% csrf_token %}{% include 'taller/formulario.html' %}<div class="d-flex gap-2 justify-content-end mt-4"><a class="btn btn-outline-light" href="{% url 'repuestos:lista' %}">Volver sin guardar</a><button class="btn btn-primary">Guardar cambios</button></div></form></div>{% endblock %}
